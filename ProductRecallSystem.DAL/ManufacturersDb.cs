@@ -16,6 +16,8 @@ namespace ProductRecallSystem.DAL
         Task<JsonResponse> Update(Manufacturers obj);
         Task<JsonResponse> Delete(int id);
     }
+
+
     public class ManufacturersDb : IManufacturersDb
     {
         private EFCodeDbContext context;

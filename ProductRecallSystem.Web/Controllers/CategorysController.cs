@@ -13,17 +13,16 @@ using System.Threading.Tasks;
 namespace ProductRecallSystem.Web.Controllers
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-  //[AllowAnonymous]
-    public class ManufacturersController : Controller
+    public class CategorysController : Controller
     {
-        private string baseApiURL = "http://localhost:10447/api/Manufactuers";
-        public async Task<IActionResult> Index() //get
+        private string baseApiURL = "http://localhost:10447/api/Categorys";
+        public async Task<IActionResult> Index()
         {
-            List<Manufacturers> list = new List<Manufacturers>();
-            JsonResponse jsonResponse = await GetManufactuers();
+            List<Categorys> list = new List<Categorys>();
+            JsonResponse jsonResponse = await GetCategorys();
             if (jsonResponse.IsSuccess)
             {
-                list = JsonConvert.DeserializeObject<List<Manufacturers>>(jsonResponse.Data.ToString()); //Deserialize Result
+                list = JsonConvert.DeserializeObject<List<Categorys>>(jsonResponse.Data.ToString()); //Deserialize Result
             }
             else
             {
@@ -32,7 +31,7 @@ namespace ProductRecallSystem.Web.Controllers
             }
             return View(list);
         }
-        public async Task<JsonResponse> GetManufactuers()
+        public async Task<JsonResponse> GetCategorys()
         {
             JsonResponse jsonResponse = new JsonResponse();
             var accessToken = HttpContext.Session.GetString("JWToken");

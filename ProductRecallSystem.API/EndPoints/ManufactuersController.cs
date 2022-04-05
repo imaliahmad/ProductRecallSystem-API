@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductRecallSystem.API.APIModels.Request;
@@ -11,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace ProductRecallSystem.API.EndPoints
 {
-    [Authorize]
+    //[Authorize(Roles = "Admin")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class ManufactuersController : ControllerBase

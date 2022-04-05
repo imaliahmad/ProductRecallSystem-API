@@ -10,8 +10,8 @@ using ProductRecallSystem.DAL.Data;
 namespace ProductRecallSystem.DAL.Migrations
 {
     [DbContext(typeof(EFCodeDbContext))]
-    [Migration("20220323024817_UpdatedAppUserModel")]
-    partial class UpdatedAppUserModel
+    [Migration("20220328162032_updatedUsesModel")]
+    partial class updatedUsesModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -322,6 +322,12 @@ namespace ProductRecallSystem.DAL.Migrations
             modelBuilder.Entity("ProductRecallSystem.BOL.AppUsers", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Contact")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");

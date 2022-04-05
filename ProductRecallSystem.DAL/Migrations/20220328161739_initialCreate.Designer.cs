@@ -10,8 +10,8 @@ using ProductRecallSystem.DAL.Data;
 namespace ProductRecallSystem.DAL.Migrations
 {
     [DbContext(typeof(EFCodeDbContext))]
-    [Migration("20220322180233_AddedIdentityFramework")]
-    partial class AddedIdentityFramework
+    [Migration("20220328161739_initialCreate")]
+    partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -84,6 +84,10 @@ namespace ProductRecallSystem.DAL.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -135,6 +139,8 @@ namespace ProductRecallSystem.DAL.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -311,6 +317,22 @@ namespace ProductRecallSystem.DAL.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Recalls");
+                });
+
+            modelBuilder.Entity("ProductRecallSystem.BOL.AppUsers", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasDiscriminator().HasValue("AppUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

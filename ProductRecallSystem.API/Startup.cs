@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using ProductRecallSystem.BLL;
 using ProductRecallSystem.BOL;
 using ProductRecallSystem.DAL;
@@ -15,6 +17,7 @@ using ProductRecallSystem.DAL.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ProductRecallSystem.API
@@ -46,18 +49,42 @@ namespace ProductRecallSystem.API
             var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
             services.AddControllersWithViews(x => x.Filters.Add(new AuthorizeFilter(policy)));
 
-            services.ConfigureApplicationCookie(opt =>
+            #region JWT Authentication
+            var signInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Module-Secret-Key"));
+            var tokenValidationParameter = new TokenValidationParameters()
             {
-                opt.LoginPath = "/Security/Login";
-                opt.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
-                {
-                    OnRedirectToLogin = redirectContext =>
-                    {
-                        redirectContext.HttpContext.Response.StatusCode = 401;
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+                IssuerSigningKey = signInKey,
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+
+            services.AddAuthentication(auth =>
+            {
+                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+             .AddJwtBearer(jwt => { jwt.TokenValidationParameters = tokenValidationParameter; });
+            #endregion
+
+
+            //services.ConfigureApplicationCookie(opt =>
+            //{
+            //    opt.LoginPath = "/Security/Login";
+            //    opt.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
+            //    {
+            //        OnRedirectToLogin = redirectContext =>
+            //        {
+            //            redirectContext.HttpContext.Response.StatusCode = 401;
+            //            return Task.CompletedTask;
+            //        },
+            //        OnRedirectToAccessDenied = redirectContext =>
+            //        {
+
+            //            redirectContext.HttpContext.Response.StatusCode = 401;
+            //            return Task.CompletedTask;
+            //        },
+            //    };
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
